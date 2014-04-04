@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import structure.Graphe;
 import structure.Sommet;
@@ -21,18 +22,20 @@ public class Program {
 
 		do {
 			System.out.print("Voici les sommets : ");
-			for(Sommet s : graphe.getListeSommets()) {
+			for(Sommet s : graphe.getListeSommets())
 				System.out.print(s.getEtiquette() + ", ");
-			}
 			
 			System.out.println("\n\nVeuillez entrer les arcs du graphe");
-			System.out.println("Sommet de depart : ");
+			System.out.print("Sommet de depart : ");
 			choixSommetDepart = lireChoix(1, graphe.getNombreSommets());
 
-			System.out.println("Sommet d'arrive : ");
+			System.out.print("Sommet d'arrive : ");
 			choixSommetArrive = lireChoix(1, graphe.getNombreSommets());
 			
-			graphe.ajouterArc(choixSommetDepart, choixSommetArrive);
+			if(graphe.validerArc(choixSommetDepart, choixSommetArrive)) {
+				graphe.ajouterArc(choixSommetDepart, choixSommetArrive);
+				System.out.println("Arc ajoute");
+			}
 			
 			System.out.println("Voulez-vous ajouter un arc? (1 pour oui / 0 pour non) : ");
 			choixAjouterArc = lireChoix(0, 1);
@@ -46,12 +49,20 @@ public class Program {
 			System.out.println(s.getEtiquette() + " : " + s.getDegreePositif() + " : " + s.getDegreeNegatif());
 		}
 
-		if(graphe.cycleEulerien()) {
+		if(graphe.estCycleEulerien()) {
 			System.out.println("Le graphe contient un cycle eulerien");
 		}
 		else {
 			System.out.println("Le graphe ne contient pas de cycle eulerien");
 		}
+		
+		ArrayList<Integer> liste = new ArrayList<Integer>();
+		Sommet s = graphe.getSommetParEtiquette(1);
+		graphe.trouverCycle(s, liste);
+		
+		/*for(int som : liste) {
+			System.out.println(som);
+		}*/
 	}
 	
 	public static int lireChoix(int min, int max) {

@@ -32,4 +32,14 @@ public class Sommet {
 	public int getDegreeNegatif() {
 		return degreeNegatif;
 	}
+
+	public static int getCompteurSommet() {
+		return compteurSommet;
+	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(etiquette);
+	}
+	
 }
