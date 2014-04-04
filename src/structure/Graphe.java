@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class Graphe {
 
 	private Sommet listeSommets[];	// liste contenant les sommets
-
+	private int nombreCycle;
 	private int matriceAdjacence[][]; 
 	private int nombreSommets;
 	
@@ -14,6 +14,7 @@ public class Graphe {
 		matriceAdjacence = new int[nombreSommets][nombreSommets];
 		listeSommets = new Sommet[nombreSommets];
 		this.nombreSommets = nombreSommets;
+		nombreCycle = 0;
 		
 		// initialiser la matrice a 0
 		for(int i=0; i<nombreSommets; i++)
@@ -26,23 +27,12 @@ public class Graphe {
 	}
 	
 	public boolean validerArc(int debut, int fin) {
-		boolean sommetSeul = true;
-		
-		/*for(int i=0; i<nombreSommets; i++) {
-			for(int j=0; j<nombreSommets; j++) {
-				if(matriceAdjacence[i][j] == 1) {
-					sommetSeul = false;
-				}
-			}
-		}*/
 			
 		// Verifie si le sommet de depart est le meme que le sommet d'arrive
 		if(debut == fin) 
 			System.out.println("Un sommet ne peut pas avoir un arc qui pointe vers le meme sommet, impossible d'ajouter cet arc.");
 		else if(matriceAdjacence[fin - 1][debut - 1] == 1) 
 			System.out.println("Un arc pointe deja dans le sens contraire, impossible d'ajouter cet arc.");
-		/*else if(sommetSeul)
-			System.out.println("Un sommet n'est pas lie avec un arc, impossible d'ajouter cet arc.");*/
 		else
 			return true;
 		
@@ -112,25 +102,32 @@ public class Graphe {
 		// pour chaque sommet, verifier le degre est pair
 		// si impair != cycle euclerien
 		for(Sommet s : listeSommets) {
-			if(s.getDegreeNegatif() + s.getDegreePositif() % 2 != 0) {
+			if((s.getDegreeNegatif() + s.getDegreePositif()) % 2 != 0) {
 				estEulerien = false;
 			}
 		}
 		return estEulerien;
 	}
 	
-	public int trouverCycle(Sommet sommetActuel, ArrayList<Integer> sommetVisites) {
+	public void chercherCycle() {
+		for(int i=0; i<nombreSommets; i++) {
+			trouverCycle(listeSommets[i], new ArrayList<Integer>());
+		}
+	}
+	
+	public void trouverCycle(Sommet sommetActuel, ArrayList<Integer> sommetVisites) {
 		
 		if(sommetVisites.contains((sommetActuel.getEtiquette()))) {
+			String stringCycle = "";
 			sommetVisites.add(sommetActuel.getEtiquette());
 			
 			for(int som : sommetVisites) {
-				System.out.print(som);
+				stringCycle = stringCycle.concat(som + " -> ");
 			}
 			
-			System.out.println();
-			
-			return 1;
+			stringCycle = stringCycle.substring(0, stringCycle.length() - 4);
+			System.out.println(stringCycle);
+			nombreCycle++;
 		} else {
 			sommetVisites.add(sommetActuel.getEtiquette());
 			int rangee = sommetActuel.getEtiquette() - 1;
@@ -141,8 +138,29 @@ public class Graphe {
 					trouverCycle(prochainSommet, new ArrayList<Integer>(sommetVisites));
 				}
 			} // fin for
-			return 0;
 		}
 		
+	}
+
+	public int getNombreCycle() {
+		return nombreCycle;
+	}
+
+	public boolean validerSommetSeul() {
+//		boolean sommetSeul = true;
+//		
+//		for(int i=0; i<nombreSommets; i++) {
+//			for(int j=0; j<nombreSommets; j++) {
+//				if(matriceAdjacence[i][j] == 1) {
+//					sommetSeul = false;
+//				}
+//			}
+//			
+//		}
+//		return sommetSeul;
+		
+		/*else if(sommetSeul)
+		System.out.println("Un sommet n'est pas lie avec un arc, impossible d'ajouter cet arc.");*/
+		return false;
 	}
 }

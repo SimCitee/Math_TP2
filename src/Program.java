@@ -15,13 +15,14 @@ public class Program {
 		int choixSommetArrive = 0;
 		int choixAjouterArc = 0;
 
-		System.out.print("Entrez le nombre de sommets : ");
-		choixNbSommet = lireChoix(1, 100);
-		System.out.println("");
+		do {
+			System.out.print("Entrez le nombre de sommets (2 a 100) : ");
+			choixNbSommet = lireChoix(1, 100);
+		} while(choixNbSommet <= 1);
 		Graphe graphe = new Graphe(choixNbSommet);
 
 		do {
-			System.out.print("Voici les sommets : ");
+			System.out.print("\nVoici les sommets : ");
 			for(Sommet s : graphe.getListeSommets())
 				System.out.print(s.getEtiquette() + ", ");
 			
@@ -37,28 +38,35 @@ public class Program {
 				System.out.println("Arc ajoute");
 			}
 			
-			System.out.println("Voulez-vous ajouter un arc? (1 pour oui / 0 pour non) : ");
-			choixAjouterArc = lireChoix(0, 1);
+			if(graphe.validerSommetSeul()) {
+				System.out.print("\nVotre graphe n'est pas un graphe simple, ajoutez un arc.");
+				choixAjouterArc = 1;
+			}
+			else {
+				System.out.print("\nVous avez un graphe simple, voulez-vous ajouter un arc? (1 pour oui / 0 pour non) : ");
+				choixAjouterArc = lireChoix(0, 1);
+			}
 		} while(choixAjouterArc == 1);
 		
 		graphe.calculerDegreePositifNegatif();
 		//graphe.afficherMatriceAdjacence();
 		
-		System.out.println("Le degree de chaque sommet (sommet / degreePositif / degreeNegatif) : ");
+		System.out.println("\nLe degree de chaque sommet (sommet : degree positif / degree negatif) : ");
 		for(Sommet s : graphe.getListeSommets()) {
-			System.out.println(s.getEtiquette() + " : " + s.getDegreePositif() + " : " + s.getDegreeNegatif());
+			System.out.println(s.getEtiquette() + " : " + s.getDegreePositif() + " / " + s.getDegreeNegatif());
 		}
 
 		if(graphe.estCycleEulerien()) {
-			System.out.println("Le graphe contient un cycle eulerien");
+			System.out.println("\nLe graphe contient un cycle eulerien");
 		}
 		else {
-			System.out.println("Le graphe ne contient pas de cycle eulerien");
+			System.out.println("\nLe graphe ne contient pas de cycle eulerien");
 		}
 		
-		ArrayList<Integer> liste = new ArrayList<Integer>();
-		Sommet s = graphe.getSommetParEtiquette(1);
-		graphe.trouverCycle(s, liste);
+		System.out.println("Voici les cycles : ");
+		graphe.chercherCycle();
+		System.out.println("Le graphe contient " + graphe.getNombreCycle() + " cycle.");
+
 		
 		/*for(int som : liste) {
 			System.out.println(som);
@@ -78,7 +86,14 @@ public class Program {
 			}
 		} while(input.isEmpty());
 
-		choice = Integer.parseInt(input);
+		//gerer les string?!
+		try{
+			choice = Integer.parseInt(input);
+		}
+		catch(NumberFormatException e) {
+			e.printStackTrace();
+			choice = min;
+		}
 		
 		if(choice < min || choice > max) {
 			choice = min;
