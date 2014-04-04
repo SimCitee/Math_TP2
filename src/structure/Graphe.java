@@ -33,8 +33,12 @@ public class Graphe {
 			System.out.println("Un sommet ne peut pas avoir un arc qui pointe vers le meme sommet, impossible d'ajouter cet arc.");
 		else if(matriceAdjacence[fin - 1][debut - 1] == 1) 
 			System.out.println("Un arc pointe deja dans le sens contraire, impossible d'ajouter cet arc.");
-		else
+		else if(matriceAdjacence[debut - 1][fin - 1] == 1) {
+			System.out.println("Cet arc existe deja, impossible d'ajouter cet arc.");
+		}
+		else {
 			return true;
+		}
 		
 		return false;
 	}
@@ -96,17 +100,33 @@ public class Graphe {
 	 * 	Parametre : aucun
 	 * 	Valeur de retour : booleen
 	 */ 
-	public boolean estCycleEulerien() {
-		boolean estEulerien = true;
+	public boolean contientCycleEulerien() {
+		boolean contientCycleEulerien = true;
 		
 		// pour chaque sommet, verifier le degre est pair
 		// si impair != cycle euclerien
 		for(Sommet s : listeSommets) {
 			if((s.getDegreeNegatif() + s.getDegreePositif()) % 2 != 0) {
-				estEulerien = false;
+				contientCycleEulerien = false;
 			}
 		}
-		return estEulerien;
+		return contientCycleEulerien;
+	}
+	
+	public boolean contientChaineEulerienne() {
+		int compteurDegreeImpair = 0;
+		
+		for(Sommet s : listeSommets) {
+			if((s.getDegreeNegatif() + s.getDegreePositif()) % 2 != 0) {
+				compteurDegreeImpair++;
+			}
+		}
+		if(compteurDegreeImpair > 2) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	
 	public void chercherCycle() {
@@ -147,20 +167,30 @@ public class Graphe {
 	}
 
 	public boolean validerSommetSeul() {
-//		boolean sommetSeul = true;
-//		
-//		for(int i=0; i<nombreSommets; i++) {
-//			for(int j=0; j<nombreSommets; j++) {
-//				if(matriceAdjacence[i][j] == 1) {
-//					sommetSeul = false;
-//				}
-//			}
-//			
-//		}
-//		return sommetSeul;
+		boolean sommetColonneSeul;
+		boolean sommetRangeeSeul;
 		
-		/*else if(sommetSeul)
-		System.out.println("Un sommet n'est pas lie avec un arc, impossible d'ajouter cet arc.");*/
+		for(int i=0; i<nombreSommets; i++) {
+			sommetColonneSeul = true;
+			sommetRangeeSeul = true;
+			for(int j=0; j<nombreSommets; j++) {
+				if(matriceAdjacence[i][j] == 1) {
+					sommetColonneSeul = false;
+					break;
+				}
+			}
+			if(sommetColonneSeul == true) {
+				for(int k=0; k<nombreSommets; k++) {
+					if(matriceAdjacence[k][i] == 1) {
+						sommetRangeeSeul = false;
+						break;
+					}
+				}
+			}
+			if(sommetColonneSeul && sommetRangeeSeul) {
+				return true;
+			}
+		}
 		return false;
 	}
 }

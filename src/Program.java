@@ -49,28 +49,30 @@ public class Program {
 		} while(choixAjouterArc == 1);
 		
 		graphe.calculerDegreePositifNegatif();
-		//graphe.afficherMatriceAdjacence();
 		
 		System.out.println("\nLe degree de chaque sommet (sommet : degree positif / degree negatif) : ");
 		for(Sommet s : graphe.getListeSommets()) {
 			System.out.println(s.getEtiquette() + " : " + s.getDegreePositif() + " / " + s.getDegreeNegatif());
 		}
 
-		if(graphe.estCycleEulerien()) {
+		if(graphe.contientCycleEulerien()) {
 			System.out.println("\nLe graphe contient un cycle eulerien");
 		}
 		else {
 			System.out.println("\nLe graphe ne contient pas de cycle eulerien");
 		}
 		
-		System.out.println("Voici les cycles : ");
-		graphe.chercherCycle();
-		System.out.println("Le graphe contient " + graphe.getNombreCycle() + " cycle.");
+		if(graphe.contientChaineEulerienne()) {
+			System.out.println("\nLe graphe contient une chaine eulerien");
+		}
+		else {
+			System.out.println("\nLe graphe ne contient pas de chaine eulerien");
+		}
 
 		
-		/*for(int som : liste) {
-			System.out.println(som);
-		}*/
+		System.out.println("\nVoici les cycles : ");
+		graphe.chercherCycle();
+		System.out.println("Le graphe contient " + graphe.getNombreCycle() + " cycle.");
 	}
 	
 	public static int lireChoix(int min, int max) {
@@ -84,21 +86,26 @@ public class Program {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			if(!isNumeric(input)) {
+				input = "";
+			}
+
 		} while(input.isEmpty());
 
-		//gerer les string?!
-		try{
-			choice = Integer.parseInt(input);
-		}
-		catch(NumberFormatException e) {
-			e.printStackTrace();
-			choice = min;
-		}
-		
+		choice = Integer.parseInt(input);
+				
 		if(choice < min || choice > max) {
 			choice = min;
 		}
 		return choice;
+	}
+	
+	// Methode permettant de valider si une chaine de caractere correspond a un nombre reel
+	// Parametre : Une chaine de caractere
+	// Valeur de retour : Retourne vrai si la chaine de caractere est un nombre reel, sinon faux
+	public static boolean isNumeric(String s) {  
+	    return s.matches("[-+]?\\d*\\.?\\d+");  
 	}
 
 }
