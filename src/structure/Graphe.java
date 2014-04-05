@@ -74,7 +74,7 @@ public class Graphe {
 	}
 	
 	/*
-	 * Méthode qui affiche les valeurs de la matrice d'adjacence
+	 * Methode qui affiche les valeurs de la matrice d'adjacence
 	 * Parametre : aucun
 	 * Valeur de retour : aucune
 	 */
@@ -93,7 +93,7 @@ public class Graphe {
 	}
 	
 	/*
-	 * Méthode qui calcul les degres de chaques sommets
+	 * Methode qui calcul les degres de chaques sommets
 	 * Parametre : aucun
 	 * Valeur de retour : aucune
 	 */
@@ -112,7 +112,7 @@ public class Graphe {
 	}
 	
 	/*
-	 * Méthode qui calcul le nombres d'arc que possede le graphe
+	 * Methode qui calcul le nombres d'arc que possede le graphe
 	 * Parametre : aucun
 	 * Valeur de retour : entier
 	 */
@@ -223,6 +223,9 @@ public class Graphe {
 		boolean sommetColonneSeul;
 		boolean sommetRangeeSeul;
 		
+		
+		//boucle a travers toutes les colonnes de la matrice d'adjacence
+		//pour verifier si le sommet en question est lie avec un arc
 		for(int i=0; i<nombreSommets; i++) {
 			sommetColonneSeul = true;
 			sommetRangeeSeul = true;
@@ -232,6 +235,8 @@ public class Graphe {
 					break;
 				}
 			}
+			//si le sommet n'a pas d'arc d'associe dans la colonne de
+			//matrice d'adjacence, verifier la rangee associe a ce sommet
 			if(sommetColonneSeul == true) {
 				for(int k=0; k<nombreSommets; k++) {
 					if(matriceAdjacence[k][i] == 1) {
