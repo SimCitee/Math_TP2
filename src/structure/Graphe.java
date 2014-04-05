@@ -5,10 +5,10 @@ import java.util.Arrays;
 
 public class Graphe {
 
-	private Sommet listeSommets[];	// liste contenant les sommets
-	private int nombreCycle;
-	private int matriceAdjacence[][]; 
-	private int nombreSommets;
+	private Sommet listeSommets[];		// liste contenant les sommets
+	private int nombreCycle;			// nombre d cycles
+	private int matriceAdjacence[][];	// matrice d'adjacence 
+	private int nombreSommets;			// nombre total de sommets
 	
 	public Graphe(int nombreSommets) {
 		matriceAdjacence = new int[nombreSommets][nombreSommets];
@@ -26,6 +26,27 @@ public class Graphe {
 			listeSommets[i] = new Sommet();
 	}
 	
+	public Sommet[] getListeSommets() {
+		return listeSommets;
+	}
+	
+	public Sommet getSommetParEtiquette(int etiquette) {
+		return listeSommets[etiquette-1];
+	}
+	
+	public int getNombreSommets() {
+		return nombreSommets;
+	}
+	
+	public int getNombreCycle() {
+		return nombreCycle;
+	}
+	
+	/*
+	 * Methode qui valide un arc (donc un seul arc entre chaque sommet et aucun arc qui debute et termine sur un meme sommet)
+	 * Parametre: sommet de depart, sommet d'arrivee
+	 * Valeur de retour: booleen
+	 */
 	public boolean validerArc(int debut, int fin) {
 			
 		// Verifie si le sommet de depart est le meme que le sommet d'arrive
@@ -52,6 +73,11 @@ public class Graphe {
 		matriceAdjacence[debut - 1][fin - 1] = 1;
 	}
 	
+	/*
+	 * Méthode qui affiche les valeurs de la matrice d'adjacence
+	 * Parametre : aucun
+	 * Valeur de retour : aucune
+	 */
 	public void afficherMatriceAdjacence() {
 		for(int i=0; i<nombreSommets; i++) {
 			for(int j=0; j<nombreSommets; j++) {
@@ -66,34 +92,43 @@ public class Graphe {
 		}
 	}
 	
-	public Sommet[] getListeSommets() {
-		return listeSommets;
+	/*
+	 * Méthode qui calcul les degres de chaques sommets
+	 * Parametre : aucun
+	 * Valeur de retour : aucune
+	 */
+	public void calculerDegrePositifNegatif() {
+
+		// Calculer degree negatif
+		for(int i=0; i<nombreSommets; i++) {
+			for(int j=0; j<nombreSommets; j++) {
+				if(matriceAdjacence[i][j] == 1) {
+					listeSommets[i].incrementDegrePositif();
+					listeSommets[j].incrementDegreNegatif();
+				}
+			}
+		}
+		
 	}
 	
-	public Sommet getSommetParEtiquette(int etiquette) {
-		return listeSommets[etiquette-1];
-	}
-	
-	public int getNombreSommets() {
-		return nombreSommets;
-	}
-	
-	public int[] calculerDegreePositifNegatif() {
-		int compteurDegreeNeg = 0;
-		int compteurDegreePos = 0;
-		int[] degreePosNeg = new int[2];
+	/*
+	 * Méthode qui calcul le nombres d'arc que possede le graphe
+	 * Parametre : aucun
+	 * Valeur de retour : entier
+	 */
+	public int getNombreArcs() {
+		int resultat = 0;
 		
 		// Calculer degree negatif
 		for(int i=0; i<nombreSommets; i++) {
 			for(int j=0; j<nombreSommets; j++) {
 				if(matriceAdjacence[i][j] == 1) {
-					listeSommets[i].incrementDegreePositif();
-					listeSommets[j].incrementDegreeNegatif();
+					resultat++;
 				}
 			}
 		}
 		
-		return degreePosNeg;
+		return resultat;
 	}
 
 	/*	Methode qui determine si le graphe contient un cycle eulerien
@@ -106,37 +141,53 @@ public class Graphe {
 		// pour chaque sommet, verifier le degre est pair
 		// si impair != cycle euclerien
 		for(Sommet s : listeSommets) {
-			if((s.getDegreeNegatif() + s.getDegreePositif()) % 2 != 0) {
+			if((s.getDegreNegatif() + s.getDegrePositif()) % 2 != 0) {
 				contientCycleEulerien = false;
 			}
 		}
 		return contientCycleEulerien;
 	}
 	
+	/*
+	 * Methode qui evalue si le graphe contient une chaine eulerienne ou pas
+	 * Parametre: aucun
+	 * Valeur de retour: booleen
+	 */
 	public boolean contientChaineEulerienne() {
 		int compteurDegreeImpair = 0;
 		
-		for(Sommet s : listeSommets) {
-			if((s.getDegreeNegatif() + s.getDegreePositif()) % 2 != 0) {
+		// verifier le nombres de degres impairs parmi les sommets
+		for(Sommet s : listeSommets) 
+			if((s.getDegreNegatif() + s.getDegrePositif()) % 2 != 0) 
 				compteurDegreeImpair++;
-			}
-		}
-		if(compteurDegreeImpair > 2) {
+		
+		//si le graphe contient plus de deux sommet de degres impair, il ne peut y avoir de chaine eulerienne
+		if(compteurDegreeImpair > 2) 
 			return false;
-		}
-		else {
+		else 
 			return true;
-		}
 	}
 	
+	/*
+	 * Methode qui, pour chaque sommet, appel une methode recursive qui parcours les arcs incidents
+	 * Parametre : aucun
+	 * Valeur de retour: aucune
+	 */
 	public void chercherCycle() {
 		for(int i=0; i<nombreSommets; i++) {
-			trouverCycle(listeSommets[i], new ArrayList<Integer>());
+			parcourirArcIncident(listeSommets[i], new ArrayList<Integer>());
 		}
 	}
 	
-	public void trouverCycle(Sommet sommetActuel, ArrayList<Integer> sommetVisites) {
+	/*
+	 * Methode recursive qui parcours tout les arcs incidents pour un sommet donnees
+	 * Parametre : sommet actuel, liste des sommets precedemment visites
+	 * Valeur de retour: aucune
+	 */
+	public void parcourirArcIncident(Sommet sommetActuel, ArrayList<Integer> sommetVisites) {
 		
+		//si le sommet actuel est deja present dans la liste des sommets visites
+		//on trouve un cycle
 		if(sommetVisites.contains((sommetActuel.getEtiquette()))) {
 			String stringCycle = "";
 			sommetVisites.add(sommetActuel.getEtiquette());
@@ -148,6 +199,7 @@ public class Graphe {
 			stringCycle = stringCycle.substring(0, stringCycle.length() - 4);
 			System.out.println(stringCycle);
 			nombreCycle++;
+		//sinon, trouver tous les arcs incidents sortant et se diriger vers les prochains sommets
 		} else {
 			sommetVisites.add(sommetActuel.getEtiquette());
 			int rangee = sommetActuel.getEtiquette() - 1;
@@ -155,17 +207,18 @@ public class Graphe {
 			for(int j=0; j<nombreSommets; j++) {
 				if(matriceAdjacence[rangee][j] == 1) {
 					Sommet prochainSommet = getSommetParEtiquette(j+1);
-					trouverCycle(prochainSommet, new ArrayList<Integer>(sommetVisites));
+					parcourirArcIncident(prochainSommet, new ArrayList<Integer>(sommetVisites));
 				}
 			} // fin for
 		}
 		
 	}
 
-	public int getNombreCycle() {
-		return nombreCycle;
-	}
-
+	/*
+	 * Methode qui valide s'il reste un sommet seul, c-a-d qui n'a aucun arc incident
+	 * Parametre: aucun
+	 * Valeur de retour: booleen
+	 */
 	public boolean validerSommetSeul() {
 		boolean sommetColonneSeul;
 		boolean sommetRangeeSeul;

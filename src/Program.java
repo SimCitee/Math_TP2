@@ -48,31 +48,34 @@ public class Program {
 			}
 		} while(choixAjouterArc == 1);
 		
-		graphe.calculerDegreePositifNegatif();
+		graphe.calculerDegrePositifNegatif();
 		
 		System.out.println("\nLe degree de chaque sommet (sommet : degree positif / degree negatif) : ");
 		for(Sommet s : graphe.getListeSommets()) {
-			System.out.println(s.getEtiquette() + " : " + s.getDegreePositif() + " / " + s.getDegreeNegatif());
+			System.out.println(s.getEtiquette() + " : " + s.getDegrePositif() + " / " + s.getDegreNegatif());
 		}
-
-		if(graphe.contientCycleEulerien()) {
-			System.out.println("\nLe graphe contient un cycle eulerien");
-		}
-		else {
-			System.out.println("\nLe graphe ne contient pas de cycle eulerien");
-		}
-		
-		if(graphe.contientChaineEulerienne()) {
-			System.out.println("\nLe graphe contient une chaine eulerien");
-		}
-		else {
-			System.out.println("\nLe graphe ne contient pas de chaine eulerien");
-		}
-
 		
 		System.out.println("\nVoici les cycles : ");
 		graphe.chercherCycle();
 		System.out.println("Le graphe contient " + graphe.getNombreCycle() + " cycle.");
+		
+		if(graphe.contientCycleEulerien()) {
+			System.out.println("Le graphe contient un cycle eulerien.");
+		}
+		else {
+			System.out.println("Le graphe ne contient pas de cycle eulerien.");
+		}
+		
+		if(graphe.contientChaineEulerienne()) {
+			System.out.println("Le graphe contient une chaine eulerienne.");
+		}
+		else {
+			System.out.println("Le graphe ne contient pas de chaine eulerienne.");
+		}
+		
+		System.out.println("Le graphe possede " + graphe.getNombreSommets() + " sommets.");
+		System.out.println("Le graphe possede " + graphe.getNombreArcs() + " arcs.");
+
 	}
 	
 	public static int lireChoix(int min, int max) {

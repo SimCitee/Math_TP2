@@ -2,35 +2,35 @@ package structure;
 
 public class Sommet {
 
-	private static int compteurSommet = 0;
-	private int etiquette;	// contient l'identifiant du sommet (une lettre)
-	private int degreePositif;
-	private int degreeNegatif;
+	private static int compteurSommet = 0;	// permet d'etiquetter chaque sommet
+	private int etiquette;		// contient l'identifiant du sommet (une lettre)
+	private int degrePositif;	// contient le degre positif du sommet
+	private int degreNegatif;	// contient le degre negatif du sommet
 
 	public Sommet() {
 		this.etiquette = ++compteurSommet;
-		degreePositif = 0;
-		degreeNegatif = 0;
+		degrePositif = 0;
+		degreNegatif = 0;
 	}
 	
 	public int getEtiquette() {
 		return etiquette;
 	}
 	
-	public void incrementDegreePositif() {
-		degreePositif++;
+	public void incrementDegrePositif() {
+		degrePositif++;
 	}
 	
-	public void incrementDegreeNegatif() {
-		degreeNegatif++;
+	public void incrementDegreNegatif() {
+		degreNegatif++;
 	}
 
-	public int getDegreePositif() {
-		return degreePositif;
+	public int getDegrePositif() {
+		return degrePositif;
 	}
 
-	public int getDegreeNegatif() {
-		return degreeNegatif;
+	public int getDegreNegatif() {
+		return degreNegatif;
 	}
 
 	public static int getCompteurSommet() {
